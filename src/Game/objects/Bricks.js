@@ -19,6 +19,7 @@ export default class Bricks {
         this.game = game;
         this.bricks = null;
         this.objects = [];
+        this.count = 0;
     }
 
     init() {
@@ -31,6 +32,7 @@ export default class Bricks {
 
                 let newBrick = new Brick(this.game, this.bricks, brickX, brickY);
                 this.objects.push(newBrick);
+                this.count++;
             }
         }
     }
@@ -41,5 +43,13 @@ export default class Bricks {
 
     getGroup() {
         return this.bricks;
+    }
+
+    kill() {
+        this.count--;
+    }
+
+    isEmpty() {
+        return this.count <= 0;
     }
 }

@@ -77,8 +77,14 @@ export default {
 
         function ballHitBrick(ball, brick) {
             brick.kill();
+            bricksCollection.kill();
             score += 10;
             scoreText.setText('Points: ' + score);
+
+            if (bricksCollection.isEmpty()) {
+                alert('You won the game, congratulations!');
+                location.reload();
+            }
 
         }
     }

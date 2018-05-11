@@ -10687,8 +10687,14 @@ let scoreText = null;
 
         function ballHitBrick(ball, brick) {
             brick.kill();
+            bricksCollection.kill();
             score += 10;
             scoreText.setText('Points: ' + score);
+
+            if (bricksCollection.isEmpty()) {
+                alert('You won the game, congratulations!');
+                location.reload();
+            }
         }
     }
 });
@@ -10830,6 +10836,7 @@ class Bricks {
         this.game = game;
         this.bricks = null;
         this.objects = [];
+        this.count = 0;
     }
 
     init() {
@@ -10842,6 +10849,7 @@ class Bricks {
 
                 let newBrick = new __WEBPACK_IMPORTED_MODULE_0__Brick__["a" /* default */](this.game, this.bricks, brickX, brickY);
                 this.objects.push(newBrick);
+                this.count++;
             }
         }
     }
@@ -10852,6 +10860,14 @@ class Bricks {
 
     getGroup() {
         return this.bricks;
+    }
+
+    kill() {
+        this.count--;
+    }
+
+    isEmpty() {
+        return this.count <= 0;
     }
 }
 /* harmony export (immutable) */ __webpack_exports__["a"] = Bricks;
