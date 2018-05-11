@@ -49,13 +49,14 @@ export default {
         function create() {
             game.physics.startSystem(Phaser.Physics.ARCADE);
 
-            //ball
-            this.ball = new Ball(game);
-            objects.push(this.ball);
-
             //paddle
             this.paddle = new Paddle(game);
             objects.push(this.paddle);
+
+            //ball
+            this.ball = new Ball(game, this.paddle);
+            objects.push(this.ball);
+
 
             //bricks
             initBricks();
