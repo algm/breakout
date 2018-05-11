@@ -10608,6 +10608,8 @@ __WEBPACK_IMPORTED_MODULE_0__Game_Game__["a" /* default */].init();
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__objects_Ball__ = __webpack_require__(/*! ./objects/Ball */ 340);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__objects_Paddle__ = __webpack_require__(/*! ./objects/Paddle */ 341);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__objects_Bricks__ = __webpack_require__(/*! ./objects/Bricks */ 342);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__objects_ScoreText__ = __webpack_require__(/*! ./objects/ScoreText */ 346);
+
 
 
 
@@ -10621,6 +10623,8 @@ __WEBPACK_IMPORTED_MODULE_0__Game_Game__["a" /* default */].init();
 let game = null;
 let objects = [];
 let bricksCollection = null;
+let score = 0;
+let scoreText = null;
 
 /* harmony default export */ __webpack_exports__["a"] = ({
 
@@ -10662,10 +10666,14 @@ let bricksCollection = null;
 
             //paddle
             this.paddle = new __WEBPACK_IMPORTED_MODULE_7__objects_Paddle__["a" /* default */](game);
-            objects.push(this.paddle, this.ball);
+            objects.push(this.paddle);
 
             //bricks
             initBricks();
+
+            //score
+            scoreText = new __WEBPACK_IMPORTED_MODULE_9__objects_ScoreText__["a" /* default */](game);
+            objects.push(scoreText);
         }
 
         function update() {
@@ -10679,6 +10687,8 @@ let bricksCollection = null;
 
         function ballHitBrick(ball, brick) {
             brick.kill();
+            score += 10;
+            scoreText.setText('Points: ' + score);
         }
     }
 });
@@ -10876,6 +10886,39 @@ class Brick {
     update() {}
 }
 /* harmony export (immutable) */ __webpack_exports__["a"] = Brick;
+
+
+/***/ }),
+/* 344 */,
+/* 345 */,
+/* 346 */
+/*!***************************************!*\
+  !*** ./src/Game/objects/ScoreText.js ***!
+  \***************************************/
+/*! exports provided: default */
+/*! exports used: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+
+class ScoreText {
+    constructor(game) {
+        this.game = game;
+        this.sprite = this.game.add.text(5, 5, 'Points: 0', {
+            font: '18px Arial',
+            fill: '#0095DD'
+        });
+    }
+
+    setText(newText) {
+        this.sprite.setText(newText);
+
+        return this;
+    }
+
+    update() {}
+}
+/* harmony export (immutable) */ __webpack_exports__["a"] = ScoreText;
 
 
 /***/ })

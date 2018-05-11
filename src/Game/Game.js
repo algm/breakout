@@ -7,10 +7,13 @@ import brick from './assets/img/brick.png';
 import Ball from './objects/Ball';
 import Paddle from './objects/Paddle';
 import Bricks from './objects/Bricks';
+import ScoreText from './objects/ScoreText';
 
 let game = null;
 let objects = [];
 let bricksCollection = null;
+let score = 0;
+let scoreText = null;
 
 export default {
 
@@ -52,11 +55,14 @@ export default {
 
             //paddle
             this.paddle = new Paddle(game);
-            objects.push(this.paddle, this.ball);
+            objects.push(this.paddle);
 
             //bricks
             initBricks();
 
+            //score
+            scoreText = new ScoreText(game);
+            objects.push(scoreText);
         }
 
         function update() {
@@ -71,6 +77,9 @@ export default {
 
         function ballHitBrick(ball, brick) {
             brick.kill();
+            score += 10;
+            scoreText.setText('Points: ' + score);
+
         }
     }
 }
