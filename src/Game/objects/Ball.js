@@ -23,8 +23,6 @@ export default class Ball {
         this.lifeLostText.anchor.set(0.5);
         this.lifeLostText.visible = false;
 
-
-        this.sprite.body.velocity.set(150, -150);
         this.sprite.body.collideWorldBounds = true;
         this.sprite.body.bounce.set(1);
 
@@ -34,6 +32,10 @@ export default class Ball {
         this.sprite.events.onOutOfBounds.add(this.ballOut.bind(this));
 
 
+    }
+
+    start() {
+        this.sprite.body.velocity.set(150, -150);
     }
 
     ballOut() {

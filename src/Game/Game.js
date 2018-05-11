@@ -4,6 +4,7 @@ import Phaser from 'phaser';
 import ball from './assets/img/wobble.png';
 import paddle from './assets/img/paddle.png';
 import brick from './assets/img/brick.png';
+import button from './assets/img/button.png';
 import Ball from './objects/Ball';
 import Paddle from './objects/Paddle';
 import Bricks from './objects/Bricks';
@@ -14,6 +15,9 @@ let objects = [];
 let bricksCollection = null;
 let score = 0;
 let scoreText = null;
+let playing = false;
+let startButton;
+let gball = null;
 
 export default {
 
@@ -44,6 +48,7 @@ export default {
             game.load.image('brick', brick);
             game.load.spritesheet('ball', ball, 20, 20);
             game.load.image('paddle', paddle);
+            game.load.spritesheet('button', button, 120, 40);
         }
 
         function create() {
@@ -54,9 +59,8 @@ export default {
             objects.push(this.paddle);
 
             //ball
-            this.ball = new Ball(game, this.paddle);
+            gball = this.ball = new Ball(game, this.paddle);
             objects.push(this.ball);
-
 
             //bricks
             initBricks();
@@ -64,6 +68,16 @@ export default {
             //score
             scoreText = new ScoreText(game);
             objects.push(scoreText);
+
+            //start
+            startButton = game.add.button(game.world.width * 0.5, game.world.height * 0.5, 'button', startGame, this, 1, 0, 2);
+            startButton.anchor.set(0.5);
+        }
+
+        function startGame() {
+            startButton.destroy();
+            gball.start();
+            playing = true;
         }
 
         function update() {
@@ -72,7 +86,9 @@ export default {
 
 
             for (let obj of objects) {
-                obj.update();
+                if (typeof obj.update == 'function') {
+                    obj.update(playing);
+                }
             }
         }
 

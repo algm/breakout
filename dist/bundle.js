@@ -10605,10 +10605,13 @@ __WEBPACK_IMPORTED_MODULE_0__Game_Game__["a" /* default */].init();
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__assets_img_paddle_png___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4__assets_img_paddle_png__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__assets_img_brick_png__ = __webpack_require__(/*! ./assets/img/brick.png */ 339);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__assets_img_brick_png___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_5__assets_img_brick_png__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__objects_Ball__ = __webpack_require__(/*! ./objects/Ball */ 340);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__objects_Paddle__ = __webpack_require__(/*! ./objects/Paddle */ 341);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__objects_Bricks__ = __webpack_require__(/*! ./objects/Bricks */ 342);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__objects_ScoreText__ = __webpack_require__(/*! ./objects/ScoreText */ 346);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__assets_img_button_png__ = __webpack_require__(/*! ./assets/img/button.png */ 348);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__assets_img_button_png___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_6__assets_img_button_png__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__objects_Ball__ = __webpack_require__(/*! ./objects/Ball */ 340);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__objects_Paddle__ = __webpack_require__(/*! ./objects/Paddle */ 341);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__objects_Bricks__ = __webpack_require__(/*! ./objects/Bricks */ 342);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__objects_ScoreText__ = __webpack_require__(/*! ./objects/ScoreText */ 346);
+
 
 
 
@@ -10625,6 +10628,9 @@ let objects = [];
 let bricksCollection = null;
 let score = 0;
 let scoreText = null;
+let playing = false;
+let startButton;
+let gball = null;
 
 /* harmony default export */ __webpack_exports__["a"] = ({
 
@@ -10645,7 +10651,7 @@ let scoreText = null;
         }
 
         function initBricks() {
-            bricksCollection = new __WEBPACK_IMPORTED_MODULE_8__objects_Bricks__["a" /* default */](game);
+            bricksCollection = new __WEBPACK_IMPORTED_MODULE_9__objects_Bricks__["a" /* default */](game);
             bricksCollection.init();
 
             objects.push(...bricksCollection.getBricks());
@@ -10655,25 +10661,36 @@ let scoreText = null;
             game.load.image('brick', __WEBPACK_IMPORTED_MODULE_5__assets_img_brick_png___default.a);
             game.load.spritesheet('ball', __WEBPACK_IMPORTED_MODULE_3__assets_img_wobble_png___default.a, 20, 20);
             game.load.image('paddle', __WEBPACK_IMPORTED_MODULE_4__assets_img_paddle_png___default.a);
+            game.load.spritesheet('button', __WEBPACK_IMPORTED_MODULE_6__assets_img_button_png___default.a, 120, 40);
         }
 
         function create() {
             game.physics.startSystem(__WEBPACK_IMPORTED_MODULE_2_phaser___default.a.Physics.ARCADE);
 
             //paddle
-            this.paddle = new __WEBPACK_IMPORTED_MODULE_7__objects_Paddle__["a" /* default */](game);
+            this.paddle = new __WEBPACK_IMPORTED_MODULE_8__objects_Paddle__["a" /* default */](game);
             objects.push(this.paddle);
 
             //ball
-            this.ball = new __WEBPACK_IMPORTED_MODULE_6__objects_Ball__["a" /* default */](game, this.paddle);
+            gball = this.ball = new __WEBPACK_IMPORTED_MODULE_7__objects_Ball__["a" /* default */](game, this.paddle);
             objects.push(this.ball);
 
             //bricks
             initBricks();
 
             //score
-            scoreText = new __WEBPACK_IMPORTED_MODULE_9__objects_ScoreText__["a" /* default */](game);
+            scoreText = new __WEBPACK_IMPORTED_MODULE_10__objects_ScoreText__["a" /* default */](game);
             objects.push(scoreText);
+
+            //start
+            startButton = game.add.button(game.world.width * 0.5, game.world.height * 0.5, 'button', startGame, this, 1, 0, 2);
+            startButton.anchor.set(0.5);
+        }
+
+        function startGame() {
+            startButton.destroy();
+            gball.start();
+            playing = true;
         }
 
         function update() {
@@ -10681,7 +10698,9 @@ let scoreText = null;
             game.physics.arcade.collide(this.ball.sprite, bricksCollection.getGroup(), ballHitBrick);
 
             for (let obj of objects) {
-                obj.update();
+                if (typeof obj.update == 'function') {
+                    obj.update(playing);
+                }
             }
         }
 
@@ -10777,7 +10796,6 @@ class Ball {
         this.lifeLostText.anchor.set(0.5);
         this.lifeLostText.visible = false;
 
-        this.sprite.body.velocity.set(150, -150);
         this.sprite.body.collideWorldBounds = true;
         this.sprite.body.bounce.set(1);
 
@@ -10785,6 +10803,10 @@ class Ball {
         game.physics.arcade.checkCollision.down = false;
         this.sprite.checkWorldBounds = true;
         this.sprite.events.onOutOfBounds.add(this.ballOut.bind(this));
+    }
+
+    start() {
+        this.sprite.body.velocity.set(150, -150);
     }
 
     ballOut() {
@@ -10835,8 +10857,10 @@ class Paddle {
         this.sprite.body.immovable = true;
     }
 
-    update() {
-        this.sprite.x = this.game.input.x || this.game.world.width * 0.5;
+    update(playing = false) {
+        if (playing) {
+            this.sprite.x = this.game.input.x || this.game.world.width * 0.5;
+        }
     }
 }
 /* harmony export (immutable) */ __webpack_exports__["a"] = Paddle;
@@ -10985,6 +11009,17 @@ class ScoreText {
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = __webpack_require__.p + "072b8937bb03c0fa37f65251a1dca999.png";
+
+/***/ }),
+/* 348 */
+/*!****************************************!*\
+  !*** ./src/Game/assets/img/button.png ***!
+  \****************************************/
+/*! dynamic exports provided */
+/*! exports used: default */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__.p + "cdafc1713ac7ca0ca59787ed88ba7030.png";
 
 /***/ })
 ],[128]);

@@ -10,8 +10,10 @@ export default class Paddle {
         this.sprite.body.immovable = true;
     }
 
-    update() {
-        this.sprite.x = this.game.input.x || this.game.world.width * 0.5;
+    update(playing = false) {
+        if (playing) {
+            this.sprite.x = this.game.input.x || this.game.world.width * 0.5;
+        }
     }
 }
 
