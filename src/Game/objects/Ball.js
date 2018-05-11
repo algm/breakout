@@ -2,9 +2,11 @@ import Phaser from 'phaser';
 
 export default class Ball {
     constructor(game, paddle) {
+        this.game = game;
         this.paddle = paddle;
         this.sprite = game.add.sprite(game.world.width * 0.5, game.world.height - 25, 'ball');
-        this.game = game;
+        this.sprite.animations.add('wobble', [0, 1, 0, 2, 0, 1, 0, 2, 0], 24);
+
         game.physics.enable(this.sprite, Phaser.Physics.ARCADE);
 
         this.lives = 3;

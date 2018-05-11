@@ -1,7 +1,7 @@
 import 'pixi';
 import 'p2';
 import Phaser from 'phaser';
-import ball from './assets/img/ball.png';
+import ball from './assets/img/wobble.png';
 import paddle from './assets/img/paddle.png';
 import brick from './assets/img/brick.png';
 import Ball from './objects/Ball';
@@ -42,7 +42,7 @@ export default {
 
         function preloadSprites() {
             game.load.image('brick', brick);
-            game.load.image('ball', ball);
+            game.load.spritesheet('ball', ball, 20, 20);
             game.load.image('paddle', paddle);
         }
 
@@ -67,7 +67,7 @@ export default {
         }
 
         function update() {
-            game.physics.arcade.collide(this.ball.sprite, this.paddle.sprite);
+            game.physics.arcade.collide(this.ball.sprite, this.paddle.sprite, ballHitPaddle);
             game.physics.arcade.collide(this.ball.sprite, bricksCollection.getGroup(), ballHitBrick);
 
 
@@ -76,8 +76,22 @@ export default {
             }
         }
 
+        function ballHitPaddle(ball, paddle) {
+            ball.animations.play('wobble');
+        }
+
         function ballHitBrick(ball, brick) {
-            brick.kill();
+            ball.animations.play('wobble');
+            let killTween = game.add.tween(brick.scale);
+            killTween.to({
+                x: 0,
+                y: 0
+            }, 200, Phaser.Easing.Linear.None);
+            killTween.onComplete.addOnce(function () {
+                brick.kill();
+            }, this);
+            killTween.start();
+
             bricksCollection.kill();
             score += 10;
             scoreText.setText('Points: ' + score);

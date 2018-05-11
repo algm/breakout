@@ -10599,8 +10599,8 @@ __WEBPACK_IMPORTED_MODULE_0__Game_Game__["a" /* default */].init();
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_p2___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_p2__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_phaser__ = __webpack_require__(/*! phaser */ 50);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_phaser___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_phaser__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__assets_img_ball_png__ = __webpack_require__(/*! ./assets/img/ball.png */ 337);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__assets_img_ball_png___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3__assets_img_ball_png__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__assets_img_wobble_png__ = __webpack_require__(/*! ./assets/img/wobble.png */ 347);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__assets_img_wobble_png___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3__assets_img_wobble_png__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__assets_img_paddle_png__ = __webpack_require__(/*! ./assets/img/paddle.png */ 338);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__assets_img_paddle_png___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4__assets_img_paddle_png__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__assets_img_brick_png__ = __webpack_require__(/*! ./assets/img/brick.png */ 339);
@@ -10653,7 +10653,7 @@ let scoreText = null;
 
         function preloadSprites() {
             game.load.image('brick', __WEBPACK_IMPORTED_MODULE_5__assets_img_brick_png___default.a);
-            game.load.image('ball', __WEBPACK_IMPORTED_MODULE_3__assets_img_ball_png___default.a);
+            game.load.spritesheet('ball', __WEBPACK_IMPORTED_MODULE_3__assets_img_wobble_png___default.a, 20, 20);
             game.load.image('paddle', __WEBPACK_IMPORTED_MODULE_4__assets_img_paddle_png___default.a);
         }
 
@@ -10677,7 +10677,7 @@ let scoreText = null;
         }
 
         function update() {
-            game.physics.arcade.collide(this.ball.sprite, this.paddle.sprite);
+            game.physics.arcade.collide(this.ball.sprite, this.paddle.sprite, ballHitPaddle);
             game.physics.arcade.collide(this.ball.sprite, bricksCollection.getGroup(), ballHitBrick);
 
             for (let obj of objects) {
@@ -10685,8 +10685,22 @@ let scoreText = null;
             }
         }
 
+        function ballHitPaddle(ball, paddle) {
+            ball.animations.play('wobble');
+        }
+
         function ballHitBrick(ball, brick) {
-            brick.kill();
+            ball.animations.play('wobble');
+            let killTween = game.add.tween(brick.scale);
+            killTween.to({
+                x: 0,
+                y: 0
+            }, 200, __WEBPACK_IMPORTED_MODULE_2_phaser___default.a.Easing.Linear.None);
+            killTween.onComplete.addOnce(function () {
+                brick.kill();
+            }, this);
+            killTween.start();
+
             bricksCollection.kill();
             score += 10;
             scoreText.setText('Points: ' + score);
@@ -10704,17 +10718,7 @@ let scoreText = null;
 /* 334 */,
 /* 335 */,
 /* 336 */,
-/* 337 */
-/*!**************************************!*\
-  !*** ./src/Game/assets/img/ball.png ***!
-  \**************************************/
-/*! dynamic exports provided */
-/*! exports used: default */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__.p + "06e021b4bade827881fe0c5a5efb5906.png";
-
-/***/ }),
+/* 337 */,
 /* 338 */
 /*!****************************************!*\
   !*** ./src/Game/assets/img/paddle.png ***!
@@ -10752,9 +10756,11 @@ module.exports = __webpack_require__.p + "43849b75b1e9d0ba32c0b7fd1372cf98.png";
 
 class Ball {
     constructor(game, paddle) {
+        this.game = game;
         this.paddle = paddle;
         this.sprite = game.add.sprite(game.world.width * 0.5, game.world.height - 25, 'ball');
-        this.game = game;
+        this.sprite.animations.add('wobble', [0, 1, 0, 2, 0, 1, 0, 2, 0], 24);
+
         game.physics.enable(this.sprite, __WEBPACK_IMPORTED_MODULE_0_phaser___default.a.Physics.ARCADE);
 
         this.lives = 3;
@@ -10968,6 +10974,17 @@ class ScoreText {
 }
 /* harmony export (immutable) */ __webpack_exports__["a"] = ScoreText;
 
+
+/***/ }),
+/* 347 */
+/*!****************************************!*\
+  !*** ./src/Game/assets/img/wobble.png ***!
+  \****************************************/
+/*! dynamic exports provided */
+/*! exports used: default */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__.p + "072b8937bb03c0fa37f65251a1dca999.png";
 
 /***/ })
 ],[128]);
